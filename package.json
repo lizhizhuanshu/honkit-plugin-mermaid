@@ -1,19 +1,20 @@
 {
   "name": "honkit-plugin-mermaid",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.5",
+  "description": "Plugin for honkit mermaid, Reference xx",
   "main": "index.js",
   "engines": {
-    "honkit": ">3.6.x"
+    "honkit": ">=3.6.x"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "mouse9527",
+  "license": "MIT",
   "dependencies": {
     "@mermaid-js/mermaid-cli": "^8.11.5",
-    "crypto": "^1.0.1",
-    "datauri": "^4.1.0"
-  }
+    "crypto": "^1.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mouse9527/honkit-plugin-mermaid.git"
+  },
+  "homepage": "https://github.com/mouse9527/honkit-plugin-mermaid.git"
 }

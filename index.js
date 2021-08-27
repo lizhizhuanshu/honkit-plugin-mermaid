@@ -1,14 +1,9 @@
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
 const {execSync} = require('child_process');
-const datauri = require('datauri/sync');
+const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 
 module.exports = {
-    // Map of hooks
-    hooks: {},
-
-    // Map of new blocks
     blocks: {
         code: (block) => {
             const lang = block.kwargs.language;
@@ -23,28 +18,30 @@ module.exports = {
             return block;
         }
     },
-
-    // Map of new filters
-    filters: {}
+    hooks: {
+        "page:before": page => {
+            page.content = page.content.replaceAll("```http request", "```");
+            return page;
+        }
+    }
 };
-
-const PREFIX = "_book/tmp"
-
-const toSvg = block => {
+const PREFIX = "_book/tmp";
+const toSvg = (block) => {
     const source = block.body;
     const hash = crypto.createHash('sha1').update(source).digest('hex');
     const mmd = path.resolve(path.join('.', `${PREFIX}_${hash}.mmd`));
     const svg = path.resolve(path.join('.', `${PREFIX}_${hash}.svg`));
-    const configFilePath = path.resolve(path.join('.', `puppeteer-config.json`));
-    const config = !fs.existsSync(mmd) ? '' : `-p ${configFilePath}`;
+    const config = path.resolve(path.join('.', `puppeteer-config.json`));
+    const configFileOption = !fs.existsSync(mmd) ? '' : `-p ${config}`;
     if (!fs.existsSync(mmd)) {
         fs.writeFileSync(mmd, source, {encoding: 'utf-8'});
     }
     if (!fs.existsSync(svg)) {
-        execSync(`npx mmdc ${config} -i ${mmd} -o ${svg}`);
+        execSync(`npx mmdc ${configFileOption} -i ${mmd} -o ${svg}`);
     }
-    const result = fs.readFileSync(svg, {encoding: 'utf-8'});
-    fs.rmSync(mmd);
+
+    const output = fs.readFileSync(svg, {encoding: 'utf-8'});
     fs.rmSync(svg);
-    return result;
+    fs.rmSync(mmd);
+    return output;
 }
